@@ -16,3 +16,6 @@ Never share the bot token. Do not commit `.env` files. The in-memory mode and re
 Run separately: `python epic_bot.py` (set `OWNER_EPIC_NAME` to your Epic display name).
 On first run it prints a device-code login link; sign in with a **throwaway** Epic account. Credentials are saved to `device_auths.json` (git-ignored; keep it private).
 It auto-accepts friend requests and party invites **only from you** and declines everyone else. It cannot queue matches. Uses the unofficial `rebootpy` library, which violates Epic's terms; the account can be banned.
+
+### Combined mode
+If `OWNER_EPIC_NAME` is set, `python bot.py` also runs the Epic bot, so `/party` shows the real party and `/mode` sets the party playlist. Playlist IDs in `epic_client.py` are **unverified** defaults; override with `PLAYLIST_BR`, `PLAYLIST_ZB`, `PLAYLIST_RELOAD`. Matchmaking is still started by you in the game client.
