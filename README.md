@@ -1,21 +1,26 @@
-# FortBox private Discord controller
+# FortBox V2 — Private Discord controller
 
-This bot supports `/myid`, `/mode`, `/search`, `/cancel`, and `/party`. **It does not control Fortnite or queue matches.**
+A deployable, owner-locked Discord control panel for a proposed three-account Fortnite squad. **No Fortnite accounts are connected and no actual Fortnite matchmaking occurs.** The bot deliberately reports this accurately.
 
-## Setup
-1. Create a Discord application at https://discord.com/developers/applications and create its bot.
-2. Install it in your own server with `bot` and `applications.commands` scopes; no administrator permission needed.
-3. Host this Python project with a persistent worker on a service supporting Python. Set `DISCORD_TOKEN` as a private environment secret. Start command: `python bot.py`.
-4. Optionally set `GUILD_ID` to your server's numerical ID to register commands to that server quickly.
-5. Initially set `OWNER_ID=0` so you can run `/myid`. **During this bootstrap phase other server members can use controller commands.** Use a private server without other members, or preferably obtain your ID first and set `OWNER_ID` before starting the bot.
-6. Set `OWNER_ID` to the numerical ID reported by `/myid`, then restart. Only that user can run controller commands (other than `/myid`, which reveals only the caller's own ID).
+## What works
+- `/panel`: persistent Search, Cancel, Party buttons (private ephemeral panel)
+- `/mode`: Battle Royale / Zero Build / Reload controller setting
+- `/search`, `/cancel`, `/party`, `/myid`
+- Server and user ID authorization; no open-access bootstrap mode
+- Railway worker deployment
 
-Never share the bot token. Do not commit `.env` files. The in-memory mode and request state reset on restart.
+## Deploy on Railway (iPhone friendly)
+1. Upload the *contents* of this folder to the root of your private GitHub repository. Replace old files `bot.py`, `requirements.txt`, `README.md`, `.env.example`, `.gitignore`; remove old `epic_client.py` and `epic_bot.py` if not using them. Do not upload a real `.env` or tokens.
+2. In Discord, enable Developer Mode; copy your own User ID and the SLAM Society Server ID. Both are numeric.
+3. In Discord Developer Portal > Bot, reset/copy the bot token **privately**. Never paste it into chat or GitHub.
+4. Railway > New Project > Deploy from GitHub repo > select `FortBox`.
+5. Railway > Variables: add `DISCORD_TOKEN`, `OWNER_ID`, `GUILD_ID` with the correct values. Do not include quotes. Railway should use `python bot.py` as start command (also specified in `railway.json`).
+6. Deploy, inspect logs for `FortBox V2 online`. In SLAM Society use `/panel`.
 
-## Epic account bot (`epic_bot.py`)
-Run separately: `python epic_bot.py` (set `OWNER_EPIC_NAME` to your Epic display name).
-On first run it prints a device-code login link; sign in with a **throwaway** Epic account. Credentials are saved to `device_auths.json` (git-ignored; keep it private).
-It auto-accepts friend requests and party invites **only from you** and declines everyone else. It cannot queue matches. Uses the unofficial `rebootpy` library, which violates Epic's terms; the account can be banned.
+If slash commands do not appear, confirm the application is installed with `applications.commands` and `bot` scopes, and that `GUILD_ID` is correct. Only the owner can use controller commands; `/myid` is available to everyone but reveals only the caller's own ID.
 
-### Combined mode
-If `OWNER_EPIC_NAME` is set, `python bot.py` also runs the Epic bot, so `/party` shows the real party and `/mode` sets the party playlist. Playlist IDs in `epic_client.py` are **unverified** defaults; override with `PLAYLIST_BR`, `PLAYLIST_ZB`, `PLAYLIST_RELOAD`. Matchmaking is still started by you in the game client.
+## Future game integration
+Bot 1 leadership, Bot 2/3 authentication, party membership, and real queue actions require a separate compatible, permitted game integration. The Discord controller does not simulate success. Unofficial Fortnite automation can violate Epic's rules and put accounts at risk. Never store account secrets in GitHub or print them in logs.
+
+## Known limitations
+Mode and request state are in memory and reset on restart. The Discord buttons record requests only. No actual matchmaking, friend acceptance, party joining, or client automation is implemented.
