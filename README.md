@@ -11,3 +11,8 @@ This bot supports `/myid`, `/mode`, `/search`, `/cancel`, and `/party`. **It doe
 6. Set `OWNER_ID` to the numerical ID reported by `/myid`, then restart. Only that user can run controller commands (other than `/myid`, which reveals only the caller's own ID).
 
 Never share the bot token. Do not commit `.env` files. The in-memory mode and request state reset on restart.
+
+## Epic account bot (`epic_bot.py`)
+Run separately: `python epic_bot.py` (set `OWNER_EPIC_NAME` to your Epic display name).
+On first run it prints a device-code login link; sign in with a **throwaway** Epic account. Credentials are saved to `device_auths.json` (git-ignored; keep it private).
+It auto-accepts friend requests and party invites **only from you** and declines everyone else. It cannot queue matches. Uses the unofficial `rebootpy` library, which violates Epic's terms; the account can be banned.
